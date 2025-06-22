@@ -1,0 +1,179 @@
+{
+  "info": {
+    "name": "TMF720 Digital Identity Management API",
+    "_postman_id": "c0d1e2f3-7b8c-1d6a-d9e1-4a5b6c7d8e0f",
+    "description": "Postman collection for TMF720 Digital Identity Management API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "List Digital Identities",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/tmf-api/digitalIdentityManagement/v4/digitalIdentity?fields=id,href,nickname&status=active",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["tmf-api", "digitalIdentityManagement", "v4", "digitalIdentity"],
+          "query": [
+            {
+              "key": "fields",
+              "value": "id,href,nickname"
+            },
+            {
+              "key": "status",
+              "value": "active"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Digital Identity",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/tmf-api/digitalIdentityManagement/v4/digitalIdentity/{{id}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["tmf-api", "digitalIdentityManagement", "v4", "digitalIdentity", "{{id}}"]
+        }
+      }
+    },
+    {
+      "name": "Create Digital Identity",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{{sampleDigitalIdentity}}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/tmf-api/digitalIdentityManagement/v4/digitalIdentity",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["tmf-api", "digitalIdentityManagement", "v4", "digitalIdentity"]
+        }
+      }
+    },
+    {
+      "name": "Patch Digital Identity",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/merge-patch+json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nickname\": \"BigJuanito78\",\n  \"credential\": [\n    {\n      \"id\": \"1\",\n      \"state\": \"active\",\n      \"trustLevel\": \"high\",\n      \"contactMedium\": [\n        {\n          \"id\": \"2\",\n          \"contactType\": \"Private\",\n          \"preferred\": true,\n          \"validFor\": {\n            \"endDateTime\": \"2021-10-05T08:36:12.275Z\"\n          },\n          \"@type\": \"PhoneMedium\",\n          \"phoneNumber\": \"415798565\"\n        }\n      ],\n      \"validFor\": {\n        \"startDateTime\": \"2021-11-04T08:36:12.275Z\"\n      },\n      \"@type\": \"LoginPasswordCredential\",\n      \"login\": \"TheRealJuanito\",\n      \"password\": \"****************\"\n    },\n    {\n      \"id\": \"2\",\n      \"state\": \"active\",\n      \"trustLevel\": \"medium\",\n      \"validFor\": {\n        \"startDateTime\": \"2021-10-05T08:36:12.275Z\"\n      },\n      \"@type\": \"TokenCredential\",\n      \"tokenCredential\": \"eyJz93a...k4laUWw\",\n      \"tokenType\": \"Bearer\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/tmf-api/digitalIdentityManagement/v4/digitalIdentity/{{id}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["tmf-api", "digitalIdentityManagement", "v4", "digitalIdentity", "{{id}}"]
+        }
+      }
+    },
+    {
+      "name": "Delete Digital Identity",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/tmf-api/digitalIdentityManagement/v4/digitalIdentity/{{id}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["tmf-api", "digitalIdentityManagement", "v4", "digitalIdentity", "{{id}}"]
+        }
+      }
+    },
+    {
+      "name": "Register Listener",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"callback\": \"http://localhost:3001/client/listener\"}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/hub",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "hub"]
+        }
+      }
+    },
+    {
+      "name": "Unregister Listener",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/hub/{{hubId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "hub", "{{hubId}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "id",
+      "value": "replace_with_digital_identity_id"
+    },
+    {
+      "key": "hubId",
+      "value": "replace_with_hub_id"
+    },
+    {
+      "key": "sampleDigitalIdentity",
+      "value": "{\"nickname\": \"BigJuanito7\", \"attachment\": [{\"attachmentType\": \"avatarPicture\", \"description\": \"avatar\", \"mimeType\": \"jpeg\", \"name\": \"BigJuanito7Avatar\", \"url\": \"http://host/Content/4aafacbd-11ff-4dc8-b445-305f2215715f\", \"size\": {\"amount\": 91, \"units\": \"Ko\"}, \"validFor\": {\"startDateTime\": \"2021-10-05T08:36:12.275Z\"}, \"@type\": \"Attachment\"}], \"contactMedium\": [{\"id\": \"1\", \"contactType\": \"Private\", \"preferred\": true, \"validFor\": {\"endDateTime\": \"2021-10-05T08:36:12.275Z\"}, \"@type\": \"EmailMedium\", \"emailAddress\": \"BigJuanito7@tmf.com\"}], \"credential\": [{\"id\": \"1\", \"state\": \"active\", \"trustLevel\": \"high\", \"contactMedium\": [{\"id\": \"2\", \"contactType\": \"Private\", \"preferred\": true, \"validFor\": {\"endDateTime\": \"2021-10-05T08:36:12.275Z\"}, \"@type\": \"PhoneMedium\", \"phoneNumber\": \"415798565\"}], \"validFor\": {\"startDateTime\": \"2021-10-05T08:36:12.275Z\"}, \"@type\": \"LoginPasswordCredential\", \"login\": \"TheRealJuanito\", \"password\": \"AseR45iyttk5SD5df8y3pOI7\"}], \"individualIdentified\": {\"id\": \"78\", \"name\": \"Jean\", \"@type\": \"PartyRef\", \"@referredType\": \"Individual\"}, \"partyRoleIdentified\": [{\"id\": \"78-89\", \"@type\": \"RelatedParty\", \"@referredType\": \"Customer\"}], \"relatedParty\": [{\"id\": \"25\", \"name\": \"TMF\", \"role\": \"DigitalIdentityProvider\", \"@type\": \"PartyRef\", \"@referredType\": \"Organization\"}], \"validFor\": {\"startDateTime\": \"2021-10-05T08:36:12.275Z\"}, \"@type\": \"DigitalIdentity\"}"
+    }
+  ]
+}

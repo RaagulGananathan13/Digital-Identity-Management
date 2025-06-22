@@ -1,0 +1,83 @@
+{
+  "nickname": "BigJuanito7",
+  "attachment": [
+    {
+      "attachmentType": "avatarPicture",
+      "description": "avatar",
+      "mimeType": "jpeg",
+      "name": "BigJuanito7Avatar",
+      "url": "http://host/Content/4aafacbd-11ff-4dc8-b445-305f2215715f",
+      "size": {
+        "amount": 91,
+        "units": "Ko"
+      },
+      "validFor": {
+        "startDateTime": "2021-10-05T08:36:12.275Z"
+      },
+      "@type": "Attachment"
+    }
+  ],
+  "contactMedium": [
+    {
+      "id": "1",
+      "contactType": "Private",
+      "preferred": true,
+      "validFor": {
+        "endDateTime": "2021-10-05T08:36:12.275Z"
+      },
+      "@type": "EmailMedium",
+      "emailAddress": "BigJuanito7@tmf.com"
+    }
+  ],
+  "credential": [
+    {
+      "id": "1",
+      "state": "active",
+      "trustLevel": "high",
+      "contactMedium": [
+        {
+          "id": "2",
+          "contactType": "Private",
+          "preferred": true,
+          "validFor": {
+            "endDateTime": "2021-10-05T08:36:12.275Z"
+          },
+          "@type": "PhoneMedium",
+          "phoneNumber": "415798565"
+        }
+      ],
+      "validFor": {
+        "startDateTime": "2021-10-05T08:36:12.275Z"
+      },
+      "@type": "LoginPasswordCredential",
+      "login": "TheRealJuanito",
+      "password": "AseR45iyttk5SD5df8y3pOI7"
+    }
+  ],
+  "individualIdentified": {
+    "id": "78",
+    "name": "Jean",
+    "@type": "PartyRef",
+    "@referredType": "Individual"
+  },
+  "partyRoleIdentified": [
+    {
+      "id": "78-89",
+      "@type": "RelatedParty",
+      "@referredType": "Customer"
+    }
+  ],
+  "relatedParty": [
+    {
+      "id": "25",
+      "name": "TMF",
+      "role": "DigitalIdentityProvider",
+      "@type": "PartyRef",
+      "@referredType": "Organization"
+    }
+  ],
+  "validFor": {
+    "startDateTime": "2021-10-05T08:36:12.275Z"
+  },
+  "@type": "DigitalIdentity"
+}
