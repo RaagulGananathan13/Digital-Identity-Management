@@ -34,11 +34,104 @@ const Home = () => {
       .catch(error => console.error("Error fetching pending actions:", error));
   }, []);
 
+  useEffect(() => {
+    // Load Chart.js and initialize charts
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/chart.js";
+    script.async = true;
+    script.onload = () => {
+      axios.get("http://localhost:3000/tmf-api/digitalIdentityManagement/v4/digitalIdentity?fields=id,status")
+        .then(response => {
+          const data = response.data;
+          const statusCounts = {
+            active: data.filter(d => d.status === "active").length,
+            suspended: data.filter(d => d.status === "suspended").length,
+            archived: data.filter(d => d.status === "archived").length,
+            unknown: data.filter(d => d.status === "unknown").length,
+            pending: data.filter(d => d.status === "pending").length,
+          };
+          console.log("Status Counts:", statusCounts); // Debug
+
+          // Bar Chart with Animation
+          new Chart(document.getElementById("barChart"), {
+            type: "bar",
+            data: {
+              labels: Object.keys(statusCounts),
+              datasets: [{
+                label: "Number of Identities",
+                data: Object.values(statusCounts),
+                backgroundColor: "rgba(20, 184, 166, 0.7)", // Teal
+                borderColor: "rgba(20, 184, 166, 1)",
+                borderWidth: 1,
+              }],
+            },
+            options: {
+              animation: {
+                duration: 1000, // Animation duration in ms
+                easing: "easeOutBounce", // Bounce effect on entry
+              },
+              hover: {
+                animationDuration: 500, // Smoother hover transition
+                mode: "nearest",
+                intersect: true,
+              },
+              scales: { y: { beginAtZero: true } },
+              plugins: {
+                legend: {
+                  labels: { color: window.matchMedia("(prefers-color-scheme: dark)").matches ? "#fff" : "#000" },
+                },
+              },
+            },
+          });
+
+          // Pie Chart with Animation
+          const activeCount = statusCounts.active;
+          const inactiveCount = Object.values(statusCounts).reduce((a, b) => a + b, 0) - activeCount;
+          new Chart(document.getElementById("pieChart"), {
+            type: "pie",
+            data: {
+              labels: ["Active", "Inactive"],
+              datasets: [{
+                data: [activeCount, inactiveCount],
+                backgroundColor: ["rgba(20, 184, 166, 0.7)", "rgba(59, 130, 246, 0.7)"], // Teal and Blue
+                borderWidth: 1,
+              }],
+            },
+            options: {
+              animation: {
+                duration: 1000, // Animation duration in ms
+                easing: "easeOutBounce", // Bounce effect on entry
+                animateRotate: true, // Rotate animation for pie
+                animateScale: true, // Scale animation for pie
+              },
+              hover: {
+                animationDuration: 500, // Smoother hover transition
+                mode: "nearest",
+                intersect: true,
+              },
+              plugins: {
+                legend: {
+                  labels: { color: window.matchMedia("(prefers-color-scheme: dark)").matches ? "#fff" : "#000" },
+                },
+              },
+            },
+          });
+        })
+        .catch(error => console.error("Error fetching chart data:", error));
+    };
+    document.body.appendChild(script);
+
+    // Cleanup
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []); // Empty dependency array to run once on mount
+
   return (
     <div className="space-y-12">
       {/* Hero Section */}
       <motion.div 
-        className="bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-700 dark:to-indigo-700 text-white p-10 rounded-lg shadow-2xl"
+        className="bg-gradient-to-r from-teal-600 to-blue-700 dark:from-teal-700 dark:to-blue-800 text-white p-10 rounded-lg shadow-2xl"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
@@ -46,7 +139,7 @@ const Home = () => {
         <h1 className="text-5xl font-extrabold">Welcome to TMF720 Dashboard</h1>
         <p className="mt-6 text-xl">Empower your digital identity management with precision and style.</p>
         <motion.button 
-          className="mt-8 bg-white dark:bg-gray-800 text-purple-600 dark:text-purple-400 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300"
+          className="mt-8 bg-white dark:bg-gray-800 text-teal-600 dark:text-teal-400 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -62,114 +155,66 @@ const Home = () => {
         transition={{ delay: 0.3, duration: 1 }}
       >
         <motion.div 
-          className="bg-gray-800 dark:bg-gray-200 p-8 rounded-lg shadow-lg border-l-4 border-purple-500 dark:border-purple-400 hover:shadow-xl transition-all duration-300"
+          className="bg-gray-700 dark:bg-gray-300 p-8 rounded-lg shadow-lg border-l-4 border-teal-500 dark:border-teal-400 hover:shadow-xl transition-all duration-300"
           whileHover={{ scale: 1.05 }}
         >
-          <h3 className="text-2xl font-semibold dark:text-white text-gray-800">Total Identities</h3>
-          <p className="mt-4 text-4xl font-bold dark:text-purple-400 text-purple-600">{stats.totalIdentities}</p>
+          <h3 className="text-2xl font-semibold dark:text-black text-gray-800">Total Identities</h3>
+          <p className="mt-4 text-4xl font-bold dark:text-teal-400 text-teal-500">{stats.totalIdentities}</p>
         </motion.div>
         <motion.div 
-          className="bg-gray-800 dark:bg-gray-200 p-8 rounded-lg shadow-lg border-l-4 border-purple-500 dark:border-purple-400 hover:shadow-xl transition-all duration-300"
+          className="bg-gray-700 dark:bg-gray-300 p-8 rounded-lg shadow-lg border-l-4 border-teal-500 dark:border-teal-400 hover:shadow-xl transition-all duration-300"
           whileHover={{ scale: 1.05 }}
         >
-          <h3 className="text-2xl font-semibold dark:text-white text-gray-800">Active Users</h3>
-          <p className="mt-4 text-4xl font-bold dark:text-purple-400 text-purple-600">{stats.activeUsers}</p>
+          <h3 className="text-2xl font-semibold dark:text-black text-gray-800">Active Users</h3>
+          <p className="mt-4 text-4xl font-bold dark:text-teal-400 text-teal-500">{stats.activeUsers}</p>
         </motion.div>
         <motion.div 
-          className="bg-gray-800 dark:bg-gray-200 p-8 rounded-lg shadow-lg border-l-4 border-purple-500 dark:border-purple-400 hover:shadow-xl transition-all duration-300"
+          className="bg-gray-700 dark:bg-gray-300 p-8 rounded-lg shadow-lg border-l-4 border-teal-500 dark:border-teal-400 hover:shadow-xl transition-all duration-300"
           whileHover={{ scale: 1.05 }}
         >
-          <h3 className="text-2xl font-semibold dark:text-white text-gray-800">Pending Actions</h3>
-          <p className="mt-4 text-4xl font-bold dark:text-purple-400 text-purple-600">{stats.pendingActions}</p>
+          <h3 className="text-2xl font-semibold dark:text-black text-gray-800">Pending Actions</h3>
+          <p className="mt-4 text-4xl font-bold dark:text-teal-400 text-teal-500">{stats.pendingActions}</p>
         </motion.div>
       </motion.div>
 
       {/* Charts Section */}
       <motion.div 
-        className="bg-gray-800 dark:bg-gray-200 p-8 rounded-lg shadow-lg"
+        className="bg-gray-700 dark:bg-gray-300 p-8 rounded-lg shadow-lg"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 1 }}
       >
-        <h2 className="text-3xl font-bold dark:text-white text-gray-800 mb-6">Analytics Overview</h2>
+        <h2 className="text-3xl font-bold dark:text-black text-gray-800 mb-6">Analytics Overview</h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Bar Chart */}
-          <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md">
+          <motion.div 
+            className="bg-white dark:bg-gray-600 p-4 rounded-lg shadow-md"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+          >
             <h3 className="text-xl font-semibold dark:text-white text-gray-800 mb-4">Identity Status Distribution</h3>
             <canvas id="barChart" className="w-full h-64"></canvas>
-          </div>
+          </motion.div>
           {/* Pie Chart */}
-          <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md">
+          <motion.div 
+            className="bg-white dark:bg-gray-600 p-4 rounded-lg shadow-md"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.7, duration: 0.8 }}
+          >
             <h3 className="text-xl font-semibold dark:text-white text-gray-800 mb-4">Active vs Inactive</h3>
             <canvas id="pieChart" className="w-full h-64"></canvas>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
 
-      {/* Canvas Panel Script for Charts */}
+      {/* Canvas Panel Script for Charts (removed, handled in useEffect) */}
       <div className="hidden">
         <canvas id="chartCanvas" />
       </div>
     </div>
   );
 };
-
-// Script to initialize charts (injected into the page)
-const script = document.createElement("script");
-script.innerHTML = `
-  document.addEventListener("DOMContentLoaded", () => {
-    // Bar Chart Data (fetching actual status counts)
-    axios.get("http://localhost:3000/tmf-api/digitalIdentityManagement/v4/digitalIdentity?fields=id,status")
-      .then(response => {
-        const data = response.data;
-        const statusCounts = {
-          active: data.filter(d => d.status === "active").length,
-          suspended: data.filter(d => d.status === "suspended").length,
-          archived: data.filter(d => d.status === "archived").length,
-          unknown: data.filter(d => d.status === "unknown").length,
-          pending: data.filter(d => d.status === "pending").length
-        };
-
-        // Bar Chart
-        new Chart(document.getElementById("barChart"), {
-          type: "bar",
-          data: {
-            labels: Object.keys(statusCounts),
-            datasets: [{
-              label: "Number of Identities",
-              data: Object.values(statusCounts),
-              backgroundColor: "rgba(167, 139, 250, 0.7)",
-              borderColor: "rgba(167, 139, 250, 1)",
-              borderWidth: 1
-            }]
-          },
-          options: {
-            scales: { y: { beginAtZero: true } },
-            plugins: { legend: { labels: { color: window.matchMedia("(prefers-color-scheme: dark)").matches ? "#fff" : "#000" } } }
-          }
-        });
-
-        // Pie Chart
-        const activeCount = statusCounts.active;
-        const inactiveCount = Object.values(statusCounts).reduce((a, b) => a + b, 0) - activeCount;
-        new Chart(document.getElementById("pieChart"), {
-          type: "pie",
-          data: {
-            labels: ["Active", "Inactive"],
-            datasets: [{
-              data: [activeCount, inactiveCount],
-              backgroundColor: ["rgba(167, 139, 250, 0.7)", "rgba(75, 85, 99, 0.7)"],
-              borderWidth: 1
-            }]
-          },
-          options: {
-            plugins: { legend: { labels: { color: window.matchMedia("(prefers-color-scheme: dark)").matches ? "#fff" : "#000" } } }
-          }
-        });
-      })
-      .catch(error => console.error("Error fetching chart data:", error));
-  });
-`;
-document.body.appendChild(script);
 
 export default Home;
