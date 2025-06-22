@@ -12,7 +12,7 @@ const app = express();
 connectDB();
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: 'https://digital-identity-management-4r82.vercel.app/' }));
 app.use(bodyParser.json());
 
 // Routes
